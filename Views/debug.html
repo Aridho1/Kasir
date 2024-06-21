@@ -8,6 +8,8 @@
   
   <h1>Hello Wolrd</h1>
   <h1>Helo universe</h1>
+  <input type="text">
+  <input type="text" readonly>
   
 <script>
 
@@ -39,15 +41,42 @@ const getProperty = (obj, type) => {
    : result;
   
 };
-/*
-console.log(
-  getEl("h1").innerHTML
-);
-*/
 
-getEl("h1", "all").forEach(el => {
-  console.log(el.innerHTML);
+getEl("input", "all").forEach((input, i, arr) => {
+  
+  input.addEventListener("focus", e => {
+    
+    input.previousElementSibling
+      .classList.add("show");
+    
+    input.style.backgroundColor = "blue";
+    
+  });
+  
+  input.addEventListener("blur", e => {
+    
+    input.previousElementSibling
+        .classList.remove("show");
+        
+    input.style.backgroundColor = "red";
+    
+  });
+  
+  input.addEventListener("keydown", e => {
+    
+    if ( e.key === "Enter" ) {
+      
+      console.log(i, getEl("input", "all").length);
+      
+    }
+    
+  });
+  
 });
+
+
+
+
 
 </script>
 </body>
