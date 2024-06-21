@@ -35,7 +35,7 @@ const fileExists = async (url, callback) => {
     
     console.error(url);
     
-    if ( typeof callback == "function" ) callback(response.ok);
+    if ( typeof callback == "function" ) callback(response.ok, url);
     
     return response.ok ? true : false;
 
@@ -88,34 +88,49 @@ const getUrl = (findThis = "url") => {
     query
     .split("&")
   ;
+  
+  console.error(list_query);
+  console.error(Array.isArray(list_query));
 
   const list_query_name = list_query.map(query_name => query_name.split("="));
 
   const result = list_query_name.filter(r => r[0] === findThis);
 
-  return [base_url, result[0]];
+  return [base_url, result[0], list_query];
 
 };
 
 const valid_url = "url";
 const defaultUrl = "Login";
 
+const [ base_url, url, list_query ] = getUrl();
 
 
-const [ base_url, url ] = getUrl();
+fileExists(`${ url[1] }/index.html`, (exists, url) => {
+  //alert(url + " is exists = " + exists);
+});
+
+
+
 
 const __config__ = async () => {
-
+  
+  const exists = 
+    await fileExists(`${ url[1] }/index.html`);
+  
   console.log(
-    !url, await fileExists(`${ url[1] }/index.html`)
+    !url + " " + !exists
   );
   
   console.log(
-    !url || !await fileExists(`${ url[1] }/index.html`)
+    !url || !exists
   );
-
-  if ( !url || !await fileExists(`${ url[1] }/index.html`) ) window.location.href = base_url + "?" + valid_url + "=" + defaultUrl;
-
+  
+  if ( !url || !exists ) {
+    window.location.href = 
+      base_url + "?" + valid_url + "=" + defaultUrl;
+  }
+  
 };
 
 __config__();
@@ -185,7 +200,51 @@ const popUp = (type, text, time) => {
 
 };
 
-popUp();
+popUp("notif", "Welcome");
+
+
+
+const redirect = (find_this = "redirect") => {
+  
+  // get url
+  const yes = getUrl(find_this)[1];
+  
+  // create newQuery a no find_this
+  const new_query = list_query.filter(query => ( query.includes("=") && query.split("=")[0] != find_this ));
+  
+  const redir_to = 
+    ( yes && yes.length>0 && yes[1] == "yes")
+    ? "true"
+    : "yes"
+  ;
+  
+  window.location.href = 
+    `?${
+      new_query.join("&")
+    }&${
+      find_this
+    }=${
+      redir_to
+    }`
+  ;
+  
+};
+
+// resfresh methode
+setTimeout(() => {
+  
+  getEl(".refresh").addEventListener("click", e => {
+    
+    if ( confirm("Sure") ) redirect();
+    
+  });
+  
+}, 5000);
+
+console.log(window.location.href);
+
+
+
 
 let uri = "Login/index.html";
 /*

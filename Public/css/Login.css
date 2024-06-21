@@ -171,3 +171,12 @@ legend.go {
 .input-group input.show {
   background-color: lue;
 }
+
+
+.wait-for-request {
+  /*
+  background-color: blue;
+  opacity: .4;
+  */
+  opacity: 1;
+}

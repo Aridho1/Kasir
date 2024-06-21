@@ -1,23 +1,17 @@
 console.log("ok");
 
-
-document.body.addEventListener("click", e => {
+const handleSubmit = () => {
   
-  //
+  popUp("notif", "succes");
   
-});
-
-document.body.addEventListener("keydown", e => {
+  setTimeout(() => {
+    
+    getEl("form input", "all")
+      .forEach(i => i.value = "");
+    
+  }, 500);
   
-  //
-
-});
-
-document.body.addEventListener("focus", e => {
-  
-  //
-  
-});
+};
 
 document.body.addEventListener("submit", e => {
   
@@ -25,15 +19,14 @@ document.body.addEventListener("submit", e => {
 
 });
 
-
-
 getEl("form input", "all").forEach((input, i, arr) =>{
+  
+  const legend = input.previousElementSibling;
   
   // handle legend
   input.addEventListener("focus", e => {
     
-    input.previousElementSibling
-      .classList.add("show");
+    legend.classList.add("show");
     
   });
   
@@ -42,8 +35,7 @@ getEl("form input", "all").forEach((input, i, arr) =>{
     
     if ( input.value == "" ) {
       
-      input.previousElementSibling
-        .classList.remove("show");
+      legend.classList.remove("show");
       
     }
     
@@ -62,7 +54,29 @@ getEl("form input", "all").forEach((input, i, arr) =>{
       // handle last element
       } else {
         
-        alert("success");
+        
+        if (
+          !input.classList
+            .contains("wait-for-request")
+        ) {
+          
+          handleSubmit();
+          document.body.focus();
+          
+          input.classList.add("wait-for-request");
+          setTimeout(() => {
+            input.classList
+              .remove("wait-for-request");
+          }, 5000);
+          
+          
+        } else {
+          
+          popUp("notif", "Please Wait & Try Later.");
+          
+        }
+        
+        
         
       }
       
