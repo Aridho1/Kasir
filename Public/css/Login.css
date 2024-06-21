@@ -10,11 +10,10 @@ body {
   align-items: center;
   flex-direction: column;
 
-
   /* background-color: #eee; */
   border-radius: 12px;
-  width: clamp(400px, 40vw, 600px);
-  height: clamp(450px, 45vw, 700px);
+  width: clamp(300px, 40vw, 450px);
+  height: clamp(350px, 45vw, 500px);
   margin: 100px auto;
 
   color: #fff;

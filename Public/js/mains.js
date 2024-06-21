@@ -49,6 +49,8 @@ const getUrl = (findThis = "url") => {
     query
   ] = real_url.split("?");
 
+  console.log(query);
+
   const list_query = 
     query
     .split("&")
@@ -67,11 +69,13 @@ const defaultUrl = "Login";
 
 const [ base_url, url ] = getUrl();
 
-const __config__ = ( async () => {
+const __config__ = async () => {
 
   if ( !url || !await fileExists(`${ url[1] }/index.html`) ) window.location.href = base_url + "?" + valid_url + "=" + defaultUrl;
 
-})();
+};
+
+__config__();
 
 main({ url: `${ url[1] }/index.html`, callback: async (result) => {
   
@@ -123,7 +127,6 @@ const popUp = (type, text, time) => {
     }
 
     const pop = document.querySelector(".pop-up");
-    console.log(pop);
 
     if ( text ) pop.innerHTML = text;
 
@@ -138,3 +141,5 @@ const popUp = (type, text, time) => {
   }
 
 };
+
+popUp();
