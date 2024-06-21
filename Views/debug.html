@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Page title</title>
+</head>
+<body>
+  
+  <h1>Hello Wolrd</h1>
+  <h1>Helo universe</h1>
+  
+<script>
+
+const getEl = (selector, type = "") => {
+  
+  const qs = 
+    type.toLowerCase() === "all" 
+    ? "querySelectorAll" 
+    : "querySelector";
+  
+  return document[qs](selector);
+  
+};
+
+const getProperty = (obj, type) => {
+  
+  if ( typeof obj !== "object" ) return false;
+  
+  const result = [];
+  
+  for ( const key in obj ) {
+    
+    result.push(key);
+    
+  }
+  
+ return type 
+   ? result.filter(r => typeof obj[r] === type)
+   : result;
+  
+};
+/*
+console.log(
+  getEl("h1").innerHTML
+);
+*/
+
+getEl("h1", "all").forEach(el => {
+  console.log(el.innerHTML);
+});
+
+</script>
+</body>
+</html>

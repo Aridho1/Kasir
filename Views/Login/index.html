@@ -1,23 +1,28 @@
 <div class="container">
 
-  <h1>Page Login</h1>
+  <h1 class="refresh">Page Login</h1>
 
   <fieldset>
 
-    <legend>User - Password</legend>
+    <legend>Authorization</legend>
 
     <form action="" method="POST">
       <div class="input-group">
-        <!-- <label for="input-login-username">Username : </label> -->
-        <input type="text" id="input-login-username" placeholder="Username.." required>
-      </div>
-      <div class="input-group">
-        <!-- <label for="input-login-password">Password : </label> -->
-        <input type="password" id="input-login-password" placeholder="Password.." required>
+        
+        <fieldset>
+          <legend><span>Username</span></legend>
+          <input type="text" id="input-login-username" placeholder="" required>
+        </fieldset>
+      
+        <fieldset>
+          <legend><span>Password</span></legend>
+          <input type="password" id="input-login-password" placeholder="" required>
+        </fieldset>
+        
       </div>
       <div class="button-group">
-        <button>Cancel</button>
-        <button>Submit</button>
+        <button class="button-cancel">Cancel</button>
+        <button class="button-submit">Submit</button>
       </div>
     </form>
   </fieldset>

@@ -44,6 +44,35 @@ const fileExists = async (url, callback) => {
   }
 };
 
+const getEl = (selector, type = "") => {
+  
+  const qs = 
+    type.toLowerCase() === "all" 
+    ? "querySelectorAll" 
+    : "querySelector";
+  
+  return document[qs](selector);
+  
+};
+
+const getProperty = (obj, type) => {
+  
+  if ( typeof obj !== "object" ) return false;
+  
+  const result = [];
+  
+  for ( const key in obj ) {
+    
+    result.push(key);
+    
+  }
+  
+ return type 
+   ? result.filter(r => typeof obj[r] === type)
+   : result;
+  
+};
+
 const getUrl = (findThis = "url") => {
 
   const real_url = window.location.href;

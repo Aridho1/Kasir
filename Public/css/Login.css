@@ -5,6 +5,7 @@ body {
 }
 
 .container {
+  font-size: 1.2em;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -12,8 +13,8 @@ body {
 
   /* background-color: #eee; */
   border-radius: 12px;
-  width: clamp(300px, 40vw, 450px);
-  height: clamp(350px, 45vw, 500px);
+  width: clamp(330px, 40vw, 500px);
+  height: clamp(330px, 45vw, 550px);
   margin: 100px auto;
 
   color: #fff;
@@ -32,12 +33,18 @@ h1:hover {
   transform: translateY(-15%);
 }
 
+.input-group {
+  flex-direction: column;
+  gap: 15px;
+}
+
 .input-group,
 .button-group {
   display: flex;
-  justify-content: space-between;
-
-  gap: 10px;
+  justify-content: space-evenly;
+  align-items: space-evenly;
+  /*background-color: aqua;*/
+  
   width: 100%;
   padding: 10px 0 5px;
   /* background-color: aqua; */
@@ -45,14 +52,23 @@ h1:hover {
   /* position: relative */
 }
 
-.input-group > *,
-.button-group > * {
-  flex: 1;
+/*.input-group > *,*/
+.button-group button {
+  display: block;
   border-radius: 4px;
-  width: 100%;
+  width: 40%;
   overflow: hidden;
   padding: 2px 8px;
 }
+
+.button-cancel {
+  color: red;
+}
+
+.button-submit {
+  color: blue;
+}
+
 /* .input-group input::before {
   display: block;
   content: ":";
@@ -61,8 +77,8 @@ h1:hover {
 } */
 fieldset {
   border: 2px solid #ccc;
-  padding: 10px;
-  margin-bottom: 20px;
+  
+  argin-bottom: 20px;
 }
 legend {
   font-weight: bold;
@@ -80,4 +96,67 @@ legend {
 legend.go {
   transform: translateY(100%);
   position: absolute;
+}
+
+.input-group fieldset {
+  position: relative;
+  border-radius: 8px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: scale(1);
+}
+
+.input-group legend {
+  position: absolute;
+  top: 0;
+  left: 5px;
+  width: 40%;
+  height: 100%;
+  transform: scale(1);
+  border: none;
+  outline: none;
+  color: black;
+  padding: 0;
+  margin: 0;
+  background-color: gren;
+  font-size: 0.5em;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  transition: .5s;
+}
+
+.input-group input {
+  width: 90%;
+  height: 100%;
+  outline: none;
+  background-color: vilet;
+  margin: auto;
+  padding: 8px 5px;
+  border: 2px solid black;
+  border-radius: 4px;
+  transition: .5s;
+  background-color: none;
+  /*transform: scale(1.2);*/
+}
+
+.input-group input.show ~ legend,
+.input-group legend.show {
+  border: 2px solid black;
+  transform: translate(0, -50%) scale(.6);
+  backdrop-filter: blur(100px);
+  background-color: white;
+  color: black;
+  left: -5px;
+}
+
+.input-group input.show {
+  background-color: lue;
 }
