@@ -9,7 +9,7 @@ const fetchData = async (  url, type  ) => {
       if (xhr.readyState==4) {
         if (xhr.status==200) {
           resolve(xhr.responseText);
-        } else reject("Failed to fetch data: " + xhr.status)
+        } else reject("Failed to fetch data: " + xhr.status + " ::url::" + url)
       }
     };
     
@@ -29,9 +29,13 @@ const main = async ({ url, type, callback}) => {
   }
 };
 
-const fileExists = async (url) => {
+const fileExists = async (url, callback) => {
   try {
     const response = await fetch(url, { method: 'HEAD' });
+    
+    console.error(url);
+    
+    if ( typeof callback == "function" ) callback(response.ok);
     
     return response.ok ? true : false;
 
@@ -49,7 +53,7 @@ const getUrl = (findThis = "url") => {
     query
   ] = real_url.split("?");
 
-  console.log(query);
+  if ( !query ) window.location.href = "?url=login";
 
   const list_query = 
     query
@@ -67,9 +71,19 @@ const getUrl = (findThis = "url") => {
 const valid_url = "url";
 const defaultUrl = "Login";
 
+
+
 const [ base_url, url ] = getUrl();
 
 const __config__ = async () => {
+
+  console.log(
+    !url, await fileExists(`${ url[1] }/index.html`)
+  );
+  
+  console.log(
+    !url || !await fileExists(`${ url[1] }/index.html`)
+  );
 
   if ( !url || !await fileExists(`${ url[1] }/index.html`) ) window.location.href = base_url + "?" + valid_url + "=" + defaultUrl;
 
@@ -143,3 +157,24 @@ const popUp = (type, text, time) => {
 };
 
 popUp();
+
+let uri = "Login/index.html";
+/*
+fileExists(uri, (exists) => {
+  
+  //document.body.innerHTML += `Login is exists : ${ exists }`;
+  
+  console.error(
+    `${ uri } is exists : ${ exists }`
+  );
+  
+  main({
+    url: uri,
+    callback: result => {
+      console.log(result);
+      document.body.innerText = exists;
+    }
+  });
+  
+});
+*/
