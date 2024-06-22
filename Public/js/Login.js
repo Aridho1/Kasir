@@ -6,10 +6,12 @@ const handleSubmit = () => {
   
   setTimeout(() => {
     
-    getEl("form input", "all")
-      .forEach(i => i.value = "");
+    getEl("form input", "all").forEach(i => {
+      i.value = "";
+      i.focus();
+    });
     
-  }, 500);
+  }, 1);
   
 };
 
@@ -86,3 +88,22 @@ getEl("form input", "all").forEach((input, i, arr) =>{
   
 });
 
+getEl(".button-cancel").addEventListener("click", e=>{
+  
+  let isset_value = [];
+  
+  getEl("form input", "all").forEach((i) => {
+    isset_value.push(i.value == "" ? false : true);
+  });
+  
+  if ( isset_value.includes(true) ) {
+    
+    getEl("form input", "all").forEach((i) => {
+      
+      i.value = "";
+      
+    });
+    
+  } else popUp("notif", "Failed!");
+  
+});

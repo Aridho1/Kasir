@@ -55,7 +55,7 @@ const getEl = (selector, type = "") => {
   
 };
 
-const getProperty = (obj, type) => {
+const getProperties = (obj, type) => {
   
   if ( typeof obj !== "object" ) return false;
   
@@ -235,7 +235,7 @@ setTimeout(() => {
   
   getEl(".refresh").addEventListener("click", e => {
     
-    if ( confirm("Sure") ) redirect();
+    if ( confirm("Refresh?") ) redirect();
     
   });
   
