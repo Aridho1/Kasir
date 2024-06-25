@@ -9,7 +9,7 @@ const fetchData = async (  url, type  ) => {
       if (xhr.readyState==4) {
         if (xhr.status==200) {
           resolve(xhr.responseText);
-        } else reject("Failed to fetch data: " + xhr.status + " ::url::" + url)
+        } else reject("Failed to fetch data: " + xhr.status + " ::url:: " + url)
       }
     };
     
@@ -44,7 +44,7 @@ const fileExists = async (url, callback) => {
   }
 };
 
-const getEl = (selector, type = "") => {
+const getEl = (selector = "body", type = "") => {
   
   const qs = 
     type.toLowerCase() === "all" 
@@ -77,9 +77,12 @@ const getUrl = (findThis = "url") => {
 
   const real_url = window.location.href;
   
-  if ( real_url.includes("?") ) window.location.href = "?url=Login";
+  if ( !real_url.includes("?") ) {
+    
+    window.location.href = "?url=Login";
+    return;
   
-  console.log("ok");
+  }
   
   const [
     base_url,
@@ -144,8 +147,8 @@ main({ url: `${ url[1] }/index.html`, callback: async (result) => {
   const new_href = 
     //first_link.href
     first_link.getAttribute("href")
-    .split("/").map((link, i) => {
-      if ( i == first_link.href.split("/").length - 1 ) return url[1] + ".css";
+    .split("/").map((link, i, old_link) => {
+      if ( i == old_link.length - 1 ) return url[1] + ".css";
       else return link;
     }).join("/");
   
@@ -156,17 +159,27 @@ main({ url: `${ url[1] }/index.html`, callback: async (result) => {
   link.setAttribute("href", new_href);
   link.setAttribute("class", "my-css");
   
-  if ( await fileExists(new_href) ) {
-    getEl("head")
-      .appendChild(link);
+  const href_exists = await fileExists(new_href);
+  
+  if ( href_exists ) {
+    getEl("head").appendChild(link);
   }
 
 
   // handle create and add script
   const new_script = document.createElement("script");
   new_script.setAttribute("src", new_href.replace(/css/g, "js"));
-
-  if ( await fileExists(new_href.replace(/css/g, "js")) ) {
+  
+  const script_exists = await 
+    fileExists(new_href.replace(/css/g, "js"));
+  /*
+  console.log(
+    "script exists", script_exists,
+    "\nhref exists", href_exists
+  );
+  */
+  
+  if ( script_exists ) {
     document.body.appendChild(new_script);
   }
   
@@ -224,7 +237,7 @@ const reCreate = {
   },
 };
 
-reCreate.css( true );
+//reCreate.css( true );
 
 const redirect = (find_this = "redirect") => {
   
