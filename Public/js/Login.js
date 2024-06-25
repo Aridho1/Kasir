@@ -1,20 +1,88 @@
 console.log("ok");
 
-const handleSubmit = () => {
+let req_wait = false;
+
+const handleSubmit = (valid = true) => {
   
-  popUp("notif", "succes");
+  // all input must have value.
+  // otherwise, focus to element with no value.
+  getEl("form input", "all").forEach((input) => {
+    
+    // reject filter when already not valid.
+    // set not valid and focus when value is empty.
+    if ( valid && input.value == "" ) {
+      valid = false;
+      input.focus();
+    }
+    
+  });
   
+  // reject methode when not valid
+  if ( !valid ) return false;
+  
+  // otherwise --
+  
+  // remove all value
+  getEl("form input", "all").forEach((input) => {
+    
+    input.value = "";
+    
+    if ( input != document.activeElement ) {
+      
+      const legend = input.previousElementSibling;
+      legend.classList.remove("show");
+      
+    } else input.focus();
+    
+  });
+  
+  // reject methode when req wait
+  if ( req_wait ) {
+    popUp("notif", "Please Wait & Try Later!");
+    return false;
+  }
+  
+  // otherwise --
+  
+  // make req wait
+  req_wait = true;
+  
+  // remove req wait after 5000 ms | 5s
   setTimeout(() => {
-    
-    getEl("form input", "all").forEach(i => {
-      i.value = "";
-      i.focus();
-    });
-    
-  }, 1);
+    req_wait = false;
+  }, 5000);
+  
+  // set popUp
+  popUp("notif", "succes");
   
 };
 
+const hanldeCancel = (isset_value = []) => {
+  
+  getEl("form input", "all").forEach((input) => {
+    isset_value.push(input.value == "" ? false : true);
+  });
+  
+  if ( isset_value.includes(true) ) {
+    
+    getEl("form input", "all").forEach((input) => {
+      
+      input.value = "";
+      
+      if ( input != document.activeElement ) {
+        
+        const legend = input.previousElementSibling;
+        legend.classList.remove("show");
+        
+      } else input.focus();
+      
+    });
+    
+  } else popUp("notif", "Failed!");
+  
+};
+
+// reject sumit for all elemen
 document.body.addEventListener("submit", e => {
   
   e.preventDefault();
@@ -56,29 +124,7 @@ getEl("form input", "all").forEach((input, i, arr) =>{
       // handle last element
       } else {
         
-        
-        if (
-          !input.classList
-            .contains("wait-for-request")
-        ) {
-          
-          handleSubmit();
-          document.body.focus();
-          
-          input.classList.add("wait-for-request");
-          setTimeout(() => {
-            input.classList
-              .remove("wait-for-request");
-          }, 5000);
-          
-          
-        } else {
-          
-          popUp("notif", "Please Wait & Try Later.");
-          
-        }
-        
-        
+        handleSubmit();
         
       }
       
@@ -88,22 +134,17 @@ getEl("form input", "all").forEach((input, i, arr) =>{
   
 });
 
-getEl(".button-cancel").addEventListener("click", e=>{
+
+
+getEl(".button-submit").addEventListener("click", e => {
   
-  let isset_value = [];
+  handleSubmit();
   
-  getEl("form input", "all").forEach((i) => {
-    isset_value.push(i.value == "" ? false : true);
-  });
+});
+
+
+getEl(".button-cancel").addEventListener("click", e => {
   
-  if ( isset_value.includes(true) ) {
-    
-    getEl("form input", "all").forEach((i) => {
-      
-      i.value = "";
-      
-    });
-    
-  } else popUp("notif", "Failed!");
+  hanldeCancel();
   
 });

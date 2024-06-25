@@ -76,21 +76,20 @@ const getProperties = (obj, type) => {
 const getUrl = (findThis = "url") => {
 
   const real_url = window.location.href;
-
+  
+  if ( real_url.includes("?") ) window.location.href = "?url=Login";
+  
+  console.log("ok");
+  
   const [
     base_url,
     query
   ] = real_url.split("?");
 
-  if ( !query ) window.location.href = "?url=login";
-
   const list_query = 
     query
     .split("&")
   ;
-  
-  console.error(list_query);
-  console.error(Array.isArray(list_query));
 
   const list_query_name = list_query.map(query_name => query_name.split("="));
 
@@ -122,10 +121,6 @@ const __config__ = async () => {
     !url + " " + !exists
   );
   
-  console.log(
-    !url || !exists
-  );
-  
   if ( !url || !exists ) {
     window.location.href = 
       base_url + "?" + valid_url + "=" + defaultUrl;
@@ -141,30 +136,40 @@ main({ url: `${ url[1] }/index.html`, callback: async (result) => {
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = result;
 
-  document.querySelector('.break-line')
+  getEl('.break-line')
     .insertAdjacentHTML('afterend', tempDiv.innerHTML);
   
   // handle create and add link
-  const first_link = document.querySelector("head link");
-  const new_href = first_link.href.split("/").map((link, i) => {
-    if ( i == first_link.href.split("/").length - 1 ) return url[1] + ".css";
-    else return link;
-  }).join("/");
-
+  const first_link = getEl("head link");
+  const new_href = 
+    //first_link.href
+    first_link.getAttribute("href")
+    .split("/").map((link, i) => {
+      if ( i == first_link.href.split("/").length - 1 ) return url[1] + ".css";
+      else return link;
+    }).join("/");
+  
+  //alert(new_href);
+  
   const link = document.createElement("link");
   link.setAttribute("rel", "stylesheet");
   link.setAttribute("href", new_href);
   link.setAttribute("class", "my-css");
   
-  if ( await fileExists(new_href) ) document.querySelector("head").insertAdjacentElement("beforeend", link);
+  if ( await fileExists(new_href) ) {
+    getEl("head")
+      .appendChild(link);
+  }
 
 
   // handle create and add script
   const new_script = document.createElement("script");
   new_script.setAttribute("src", new_href.replace(/css/g, "js"));
 
-  if ( await fileExists(new_href.replace(/css/g, "js")) ) document.body.insertAdjacentElement("beforeend", new_script);
-
+  if ( await fileExists(new_href.replace(/css/g, "js")) ) {
+    document.body.appendChild(new_script);
+  }
+  
   // document.body.innerText += document.body.innerHTML;
 
 }});
@@ -178,13 +183,13 @@ const popUp = (type, text, time) => {
 
   if ( type === "notif" ) {
 
-    if ( !document.querySelector(".pop-up") ) {
+    if ( !getEl(".pop-up") ) {
       document.body.innerHTML += `<div class="pop-up">
         Welcome TO MY APP
       </div>`
     }
 
-    const pop = document.querySelector(".pop-up");
+    const pop = getEl(".pop-up");
 
     if ( text ) pop.innerHTML = text;
 
@@ -203,6 +208,23 @@ const popUp = (type, text, time) => {
 popUp("notif", "Welcome");
 
 
+const reCreate = {
+  path_public: "Public",
+  async css( sure ) {
+    
+    if ( !sure ) return false;
+    
+    console.log(base_url, "::", path_public);
+    const back_track_num =
+      getEl("head link")
+      .getAttribute("href")
+      .split("../").length - 1
+    ;
+    
+  },
+};
+
+reCreate.css( true );
 
 const redirect = (find_this = "redirect") => {
   
@@ -247,22 +269,24 @@ console.log(window.location.href);
 
 
 let uri = "Login/index.html";
-/*
+
 fileExists(uri, (exists) => {
   
   //document.body.innerHTML += `Login is exists : ${ exists }`;
   
-  console.error(
-    `${ uri } is exists : ${ exists }`
-  );
+//console.error(`${ uri } is exists : ${ exists }`);
   
   main({
     url: uri,
     callback: result => {
-      console.log(result);
-      document.body.innerText = exists;
+      
+      console.log( 
+        (result && !exists)
+        ? "Bad Request!.\nMaxsure Apache Is Turn On"
+        : "Good Request. Its Work."
+      );
+      
     }
   });
   
 });
-*/

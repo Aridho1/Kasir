@@ -6,7 +6,7 @@
 
     <legend>Authorization</legend>
 
-    <form action="" method="POST">
+    <form action="tes.php" method="POST">
       <div class="input-group">
         
         <fieldset>
@@ -21,10 +21,26 @@
         
       </div>
       <div class="button-group">
-        <button class="button-cancel">Cancel</button>
+        <button class="button-none">None</button>
         <button class="button-submit">Submit</button>
+        <button class="button-cancel">Cancel</button>
       </div>
     </form>
   </fieldset>
 
 </div>
+
+<!-- 
+
+main({
+  url: "../Public/css/login.css",
+  callback: result => {
+    console.log(result);
+    getEl("head").innerHTML += `<style>
+    ${ result }
+    </style>
+    `;
+  }
+})
+
+ -->

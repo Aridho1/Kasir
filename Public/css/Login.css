@@ -69,11 +69,14 @@ h1:hover {
   color: blue;
 }
 
+.button-none {
+  display: none;
+}
+
 .button-cancel:hover {
   background-color: red;
   color: white;
 }
-
 
 .button-submit:hover {
   background-color: blue;
@@ -170,13 +173,4 @@ legend.go {
 
 .input-group input.show {
   background-color: lue;
-}
-
-
-.wait-for-request {
-  /*
-  background-color: blue;
-  opacity: .4;
-  */
-  opacity: 1;
 }
