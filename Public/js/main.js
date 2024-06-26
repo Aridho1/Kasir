@@ -73,10 +73,53 @@ const getProperties = (obj, type) => {
   
 };
 
+
+const valid_url = "url";
+const default_url = "Login";
+
+const getUrl = (findThis = "url") => {
+  
+  if ( !window.location.search.includes("?") ) {
+    window.location.href = `?${ valid_url }=${ default_url }`;
+    return;
+  }
+
+  const list_query = 
+    window.location.search.replace("?", "").split("&");
+
+  const list_query_name = list_query.map(query_name => query_name.split("="));
+
+  const result = list_query_name.filter(r => r[0] === findThis);
+
+  return [result[0][1], list_query];
+
+};
+
+const [ url, list_query ] = getUrl();
+
 // all set
-const set = {
-  url: "",
+const config = {
+
+  log: [],
+
+  addLog(...data) {
+    
+    this.log.push(data.join(" "));
+
+  },
+
+  showLog(console_type = "log") {
+
+    this.log.map(log => console[console_type](log));
+
+  },
+
   auto_content: [
+    {
+      name: url,
+      path: url + "/index.html",
+      ignore_to: []
+    },
     {
       name: "Navbar",
       path: "Navbar/index.html",
@@ -86,35 +129,42 @@ const set = {
     },
   ],
 
-  async applyAutoContent() {
+  applyAutoContent() {
 
-    this.auto_content.map(async (ac) => {
+    console.log(this);
 
-      // is_rebort = ac.ignore_to.find(content_name => );
+    this.auto_content.map(async (ac, i) => {
 
-      if ( ac.ignore_to.includes(this.url) ) {
-        // console.error(ac.name, "is failed!");
+      if ( ac.ignore_to.includes(url) ) {
+        // console.error(`Ignore ${ ac.name }!`);
+        this.addLog(`Ignore ${ ac.name }!`);
         return false;
       }
       
-      // console.error(ac.name, "is Success!");
       const content_is_exists = await fileExists(ac.path);
 
       if ( !content_is_exists ) {
-        console.error(ac.name, "Is Not Exists. Path :", ac.path);
+        // console.error(ac.name, "Is Not Exists. Path :", ac.path);
+        this.addLog(ac.name, "Is Not Exists. Path :", ac.path);
         return false;
       }
 
       main({
         url: ac.path,
         callback: result => {
-          // getEl(".start-line").appendChild(result);
-          getEl().innerHTML = result + getEl().innerHTML;
+
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = result;
+
+          const position = i === 0 ? "afterend" : "beforebegin";
+
+          getEl('.break-line')
+            .insertAdjacentHTML(position, tempDiv.innerHTML);
+          
           this.loadSupportContent(ac.name);
         }
       });
       
-
     });
 
   },
@@ -136,7 +186,7 @@ const set = {
     const link = document.createElement("link");
     link.setAttribute("rel", "stylesheet");
     link.setAttribute("href", new_href);
-    link.setAttribute("class", "my-css");
+    link.setAttribute("class", content_name.toLowerCase() + "-css");
     
     const href_exists = await fileExists(new_href);
     
@@ -151,95 +201,139 @@ const set = {
     
     const script_exists = await 
       fileExists(new_href.replace(/css/g, "js"));
-    /*
-    console.log(
-      "script exists", script_exists,
-      "\nhref exists", href_exists
-    );
-    */
+    
     
     if ( script_exists ) {
       document.body.appendChild(new_script);
     }
 
-  } 
-}; 
+  },
 
-const getUrl = (findThis = "url") => {
-
-  const real_url = window.location.href;
-  
-  if ( !real_url.includes("?") ) {
+  async real_config() {
     
-    window.location.href = "?url=Login";
-    return;
-  
+    const exists = 
+      await fileExists(`${ url }/index.html`);
+    
+    if ( !url || !exists ) {
+      window.location.href = 
+        base_url + "?" + valid_url + "=" + default_url;
+    }
+    
+    this.applyAutoContent();
+
   }
-  
-  const [
-    base_url,
-    query
-  ] = real_url.split("?");
-
-  const list_query = 
-    query
-    .split("&")
-  ;
-
-  const list_query_name = list_query.map(query_name => query_name.split("="));
-
-  const result = list_query_name.filter(r => r[0] === findThis);
-
-  return [base_url, result[0], list_query];
-
 };
 
-const valid_url = "url";
-const defaultUrl = "Login";
-
-const [ base_url, url, list_query ] = getUrl();
-
-
-fileExists(`${ url[1] }/index.html`, (exists, url) => {
-  //alert(url + " is exists = " + exists);
-});
+config.real_config();
 
 
 
-
-const __config__ = async () => {
+const requestWait = {
+  data: [
+    {
+      name: "Ajax",
+      is_wait: false,
+      spam: {
+        total: 0,
+        num: 0
+      }
+    }
+  ],
   
-  const exists = 
-    await fileExists(`${ url[1] }/index.html`);
+  get(name) {
+    return this.data.find(data => data.name == name);
+  },
+
+  set(name) {
+
+    // reject duplicate
+    if ( this.get(name) ) return false;
+
+    this.data.push({
+      name,
+      is_wait: false,
+      spam: {
+        total: 0,
+        num: 0
+      }
+    });
+
+    // console.log("Succes Create New Request wait");
+    this.set.addLog(`Create New Request. (${ name })`);
+
+  },
+
+  fill(name, time) {
+
+    // reject un defined
+    if ( !this.get(name) ) return false;
+
+    this.data = this.data.map(data => {
+
+      if ( data.name === name ) {
+
+        data.is_wait = true;
+
+        if ( time ) {
+          setTimeout(() => {
+
+            this.clear(name);
+
+          }, time);
+        }
+
+      }
+
+      return data;
+
+    });
+    
+  },
   
-  // console.log(
-  //   !url + " " + !exists
-  // );
+  clear(name) {
+
+    // reject un defined
+    if ( !this.get(name) ) return false;
   
-  if ( !url || !exists ) {
-    window.location.href = 
-      base_url + "?" + valid_url + "=" + defaultUrl;
+    this.data = this.data.map(data => {
+  
+      if ( data.name === name ) {
+
+        data.is_wait = false;
+        data.spam.num = 0;
+
+      }
+  
+      return data;
+  
+    });
+    
+  },
+  
+  listen(name) {
+    
+    // reject un defined
+    if ( !this.get(name) ) return false;
+
+    // reject un wait
+    if ( !this.get(name).is_wait ) return false;
+    
+    this.data = this.data.map(data => {
+    
+      if ( data.name === name ) {
+    
+        data.spam.spam += 1;
+        data.spam.num += 1;
+    
+      }
+    
+      return data;
+    
+    });
+
   }
   
-  set.url = url[1];
-  set.applyAutoContent();
-  
 };
-
-__config__();
-
-main({ url: `${ url[1] }/index.html`, callback: async (result) => {
-  
-  // handle add content
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = result;
-
-  getEl('.break-line')
-    .insertAdjacentHTML('afterend', tempDiv.innerHTML);
-  
-  set.loadSupportContent(url[1]);
-
-}});
 
 
 const popUp = (type, text, time) => {
