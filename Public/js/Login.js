@@ -129,19 +129,21 @@ getEl("form input", "all").forEach((input, i, arr) =>{
   // handle next focus | submit
   input.addEventListener("keydown", e => {
     
-    // reject when empty value
-    if ( input.value === "" ) {
-
-      input.classList.add("invalid");
-
-      setTimeout(() => {
-        input.classList.remove("invalid");
-      }, 2000);
-
-      return false;
-    }
-    
     if ( e.key === "Enter" ) {
+    
+      // reject when empty value
+      if ( input.value === "" ) {
+      
+        input.classList.add("invalid");
+        
+        setTimeout(() => {
+          input.classList.remove("invalid");
+        }, 2000);
+        
+        return false;
+      }
+      
+      console.log("next");
       
       // handle - not last element
       if ( i + 1 != getEl("input", "all").length ) {

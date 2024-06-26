@@ -1,19 +1,47 @@
-<nav>
+
+
+<nav fixed="true" style="
+  --nav-height: 50px; 
+  --nav-li-width: 120px;
+">
   <div class="logo">
-    <h4>Laundry.Moboid</h4>
+    <h4>My Navbar</h4>
   </div>
-
-  <ul>
-    <li><a href="">Home</a></li>
-    <li><a href="">Dashboard</a></li>
-    <li><a href="">Laporan</a></li>
-    <li><a href="">Logout</a></li>
+  
+  <ul redirect-by-li="true">
+    <li>
+      <a href="Home.html">
+        Home
+      </a>
+    </li>
+    <li class="active">
+      <a href="Service.html">
+        Service
+      </a>
+    </li>
+    <li>
+      <a href="Aboout.html">
+        About
+      </a>
+    </li>
+    <li>
+      <a href="Gallery.html">
+        Gallery
+      </a>
+    </li>
+    <li class="last">
+      <a href="Setting.html">
+        Setting
+      </a>
+    </li>
+    <li class="magic-li"></li>
   </ul>
-
-  <div class="menu-toggle">
+  
+  <div class="hamburger-menu">
     <input type="checkbox">
     <span></span>
     <span></span>
     <span></span>
   </div>
 </nav>
+

@@ -75,13 +75,14 @@ const getProperties = (obj, type) => {
 
 
 const valid_url = "url";
-const default_url = "Login";
+const default_url = "Home";
 
 const getUrl = (findThis = "url") => {
   
   if ( !window.location.search.includes("?") ) {
-    window.location.href = `?${ valid_url }=${ default_url }`;
-    return;
+    window.location.href = 
+      `?${ valid_url }=${ default_url }&document=window`;
+    return false;
   }
 
   const list_query = 
@@ -216,7 +217,7 @@ const config = {
     
     if ( !url || !exists ) {
       window.location.href = 
-        base_url + "?" + valid_url + "=" + default_url;
+        `?${ valid_url }=${ default_url }`;
     }
     
     this.applyAutoContent();
@@ -406,10 +407,14 @@ const reCreate = {
 const redirect = (find_this = "redirect") => {
   
   // get url
-  const yes = getUrl(find_this)[1];
+  const yes = getUrl(find_this)[0];
   
   // create newQuery a no find_this
-  const new_query = list_query.filter(query => ( query.includes("=") && query.split("=")[0] != find_this ));
+  const new_query = list_query.filter(query => 
+    ( query.includes("=") && 
+      query.split("=")[0] != find_this ));
+  
+  console.log(new_query);
   
   const redir_to = 
     ( yes && yes.length>0 && yes[1] == "yes")
