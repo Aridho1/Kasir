@@ -1,4 +1,3 @@
-console.log("ok");
 
 getEl(".button-none").style.display = "none";
 

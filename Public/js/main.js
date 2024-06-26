@@ -33,7 +33,7 @@ const fileExists = async (url, callback) => {
   try {
     const response = await fetch(url, { method: 'HEAD' });
     
-    console.error(url);
+    // console.error(url);
     
     if ( typeof callback == "function" ) callback(response.ok, url);
     
@@ -67,11 +67,103 @@ const getProperties = (obj, type) => {
     
   }
   
- return type 
-   ? result.filter(r => typeof obj[r] === type)
-   : result;
+  return type 
+    ? result.filter(r => typeof obj[r] === type)
+    : result;
   
 };
+
+// all set
+const set = {
+  url: "",
+  auto_content: [
+    {
+      name: "Navbar",
+      path: "Navbar/index.html",
+      ignore_to: [
+        "Login"
+      ]
+    },
+  ],
+
+  async applyAutoContent() {
+
+    this.auto_content.map(async (ac) => {
+
+      // is_rebort = ac.ignore_to.find(content_name => );
+
+      if ( ac.ignore_to.includes(this.url) ) {
+        // console.error(ac.name, "is failed!");
+        return false;
+      }
+      
+      // console.error(ac.name, "is Success!");
+      const content_is_exists = await fileExists(ac.path);
+
+      if ( !content_is_exists ) {
+        console.error(ac.name, "Is Not Exists. Path :", ac.path);
+        return false;
+      }
+
+      main({
+        url: ac.path,
+        callback: result => {
+          // getEl(".start-line").appendChild(result);
+          getEl().innerHTML = result + getEl().innerHTML;
+          this.loadSupportContent(ac.name);
+        }
+      });
+      
+
+    });
+
+  },
+
+  async loadSupportContent (content_name) {
+
+    // handle create and add link
+    const first_link = getEl("head link");
+    const new_href = 
+      first_link.getAttribute("href")
+      .split("/").map((link, i, old_link) => {
+        if ( i == old_link.length - 1 ) return content_name + ".css";
+        else return link;
+      }).join("/");
+    
+    // alert(new_href);
+    // console.log(new_href);
+    
+    const link = document.createElement("link");
+    link.setAttribute("rel", "stylesheet");
+    link.setAttribute("href", new_href);
+    link.setAttribute("class", "my-css");
+    
+    const href_exists = await fileExists(new_href);
+    
+    if ( href_exists ) {
+      getEl("head").appendChild(link);
+    }
+
+
+    // handle create and add script
+    const new_script = document.createElement("script");
+    new_script.setAttribute("src", new_href.replace(/css/g, "js"));
+    
+    const script_exists = await 
+      fileExists(new_href.replace(/css/g, "js"));
+    /*
+    console.log(
+      "script exists", script_exists,
+      "\nhref exists", href_exists
+    );
+    */
+    
+    if ( script_exists ) {
+      document.body.appendChild(new_script);
+    }
+
+  } 
+}; 
 
 const getUrl = (findThis = "url") => {
 
@@ -120,14 +212,17 @@ const __config__ = async () => {
   const exists = 
     await fileExists(`${ url[1] }/index.html`);
   
-  console.log(
-    !url + " " + !exists
-  );
+  // console.log(
+  //   !url + " " + !exists
+  // );
   
   if ( !url || !exists ) {
     window.location.href = 
       base_url + "?" + valid_url + "=" + defaultUrl;
   }
+  
+  set.url = url[1];
+  set.applyAutoContent();
   
 };
 
@@ -142,48 +237,7 @@ main({ url: `${ url[1] }/index.html`, callback: async (result) => {
   getEl('.break-line')
     .insertAdjacentHTML('afterend', tempDiv.innerHTML);
   
-  // handle create and add link
-  const first_link = getEl("head link");
-  const new_href = 
-    //first_link.href
-    first_link.getAttribute("href")
-    .split("/").map((link, i, old_link) => {
-      if ( i == old_link.length - 1 ) return url[1] + ".css";
-      else return link;
-    }).join("/");
-  
-  //alert(new_href);
-  
-  const link = document.createElement("link");
-  link.setAttribute("rel", "stylesheet");
-  link.setAttribute("href", new_href);
-  link.setAttribute("class", "my-css");
-  
-  const href_exists = await fileExists(new_href);
-  
-  if ( href_exists ) {
-    getEl("head").appendChild(link);
-  }
-
-
-  // handle create and add script
-  const new_script = document.createElement("script");
-  new_script.setAttribute("src", new_href.replace(/css/g, "js"));
-  
-  const script_exists = await 
-    fileExists(new_href.replace(/css/g, "js"));
-  /*
-  console.log(
-    "script exists", script_exists,
-    "\nhref exists", href_exists
-  );
-  */
-  
-  if ( script_exists ) {
-    document.body.appendChild(new_script);
-  }
-  
-  // document.body.innerText += document.body.innerHTML;
+  set.loadSupportContent(url[1]);
 
 }});
 
@@ -197,7 +251,7 @@ const popUp = (type, text, time) => {
   if ( type === "notif" ) {
 
     if ( !getEl(".pop-up") ) {
-      document.body.innerHTML += `<div class="pop-up">
+      getEl().innerHTML += `<div class="pop-up">
         Welcome TO MY APP
       </div>`
     }
@@ -227,7 +281,7 @@ const reCreate = {
     
     if ( !sure ) return false;
     
-    console.log(base_url, "::", path_public);
+    // console.log(base_url, "::", path_public);
     const back_track_num =
       getEl("head link")
       .getAttribute("href")
@@ -268,6 +322,8 @@ const redirect = (find_this = "redirect") => {
 // resfresh methode
 setTimeout(() => {
   
+  if ( !getEl(".refresh") ) return false;
+
   getEl(".refresh").addEventListener("click", e => {
     
     if ( confirm("Refresh?") ) redirect();
@@ -277,6 +333,16 @@ setTimeout(() => {
 }, 5000);
 
 console.log(window.location.href);
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,7 +1,11 @@
+
+
 body {
   background: url(../img/bg-01.jpg);
   background-size: cover;
   /* background-repeat: no-repeat; */
+  height: 100vh;
+  overflow: hidden;
 }
 
 .container {
@@ -14,7 +18,7 @@ body {
   /* background-color: #eee; */
   border-radius: 12px;
   width: clamp(330px, 40vw, 500px);
-  height: clamp(330px, 45vw, 550px);
+  aspect-ratio: 20 / 21;
   margin: 100px auto;
 
   color: #fff;
@@ -89,17 +93,10 @@ h1:hover {
   color: white;
 }
 
-/* .input-group input::before {
-  display: block;
-  content: ":";
-  position: absolute;
-  inset: auto auto auto 0;
-} */
 fieldset {
   border: 2px solid #ccc;
-  
-  argin-bottom: 20px;
 }
+
 legend {
   font-weight: bold;
   /* color: #333; */
@@ -107,15 +104,6 @@ legend {
   border: 1px solid #ccc;
   border-radius: 5px;
   transition: all 0.5s;
-  /* margin-top: -15px; Menyesuaikan dengan font size dan padding yang digunakan */
-  /* background-color: white; Menutupi bagian atas fieldset */
-  /* position: absolute; Mengeluarkan dari flow dokumen */
-  /* left: 10px; Penyesuaian jarak kiri */
-}
-
-legend.go {
-  transform: translateY(100%);
-  position: absolute;
 }
 
 .input-group fieldset {
@@ -179,4 +167,24 @@ legend.go {
 
 .input-group input.show {
   background-color: lue;
+}
+
+/* Responsive Breakpoint */
+
+/* Dekstop */
+@media (max-width: 1448px) {
+  .input-group input.show ~ legend,
+  .input-group legend.show {
+    transform: translate(0, -55%) scale(.6);
+  }
+}
+
+/* I Pad | Tablet | Landscape SmartPhone */
+@media (max-width: 768px) {
+
+}
+
+/* SmartPhone */
+@media (max-width: 578px) {
+
 }
