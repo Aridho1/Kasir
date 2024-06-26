@@ -1,5 +1,7 @@
 console.log("ok");
 
+getEl(".button-none").style.display = "none";
+
 let req_wait = false;
 
 const handleSubmit = (valid = true) => {
@@ -117,7 +119,7 @@ getEl("form input", "all").forEach((input, i, arr) =>{
     if ( e.key === "Enter" ) {
       
       // handle - not last element
-      if (i + 1 != getEl("input", "all").length) {
+      if ( i + 1 != getEl("input", "all").length ) {
         
         arr[i + 1].focus();
         

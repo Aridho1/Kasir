@@ -59,6 +59,7 @@ h1:hover {
   width: 40%;
   overflow: hidden;
   padding: 2px 8px;
+  transition: .3s;
 }
 
 .button-cancel {
@@ -67,6 +68,11 @@ h1:hover {
 
 .button-submit {
   color: blue;
+  order: 2;
+}
+
+.btn-cancel {
+  display: none;
 }
 
 .button-none {
