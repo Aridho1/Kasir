@@ -2,6 +2,8 @@
 getEl(".button-none").style.display = "none";
 
 let req_wait = false;
+requestWait.set("btn-submit");
+requestWait.set("btn-cancel");
 
 const handleSubmit = (valid = true) => {
   
@@ -13,7 +15,9 @@ const handleSubmit = (valid = true) => {
     // set not valid and focus when value is empty.
     if ( valid && input.value == "" ) {
       valid = false;
-      input.focus();
+      if ( document.activeElement !== input ) {
+        input.focus();
+      }
     }
     
   });
@@ -38,8 +42,12 @@ const handleSubmit = (valid = true) => {
   });
   
   // reject methode when req wait
-  if ( req_wait ) {
-    popUp("notif", "Please Wait & Try Later!");
+  if ( requestWait.isWait("btn-submit") ) {
+
+    if ( requestWait.isSpam("btn-submit") ) {
+      console.error("spam submit");
+    } else popUp("notif", "Please Wait & Try Later!");
+
     return false;
   }
   
@@ -47,11 +55,7 @@ const handleSubmit = (valid = true) => {
   
   // make req wait
   req_wait = true;
-  
-  // remove req wait after 5000 ms | 5s
-  setTimeout(() => {
-    req_wait = false;
-  }, 5000);
+  requestWait.fill("btn-submit", 10000);
   
   // set popUp
   popUp("notif", "succes");
@@ -79,7 +83,17 @@ const hanldeCancel = (isset_value = []) => {
       
     });
     
-  } else popUp("notif", "Failed!");
+  } else {
+    if ( !requestWait.isSpam("btn-cancel", 1) ) {
+
+      popUp("notif", "Failed!");
+
+      if ( !requestWait.isWait("btn-cancel") ) {
+        requestWait.fill("btn-cancel", 10000);
+      }
+
+    } else console.error("spam cancel");
+  }
   
 };
 
@@ -114,6 +128,18 @@ getEl("form input", "all").forEach((input, i, arr) =>{
   
   // handle next focus | submit
   input.addEventListener("keydown", e => {
+    
+    // reject when empty value
+    if ( input.value === "" ) {
+
+      input.classList.add("invalid");
+
+      setTimeout(() => {
+        input.classList.remove("invalid");
+      }, 2000);
+
+      return false;
+    }
     
     if ( e.key === "Enter" ) {
       

@@ -259,7 +259,7 @@ const requestWait = {
     });
 
     // console.log("Succes Create New Request wait");
-    this.set.addLog(`Create New Request. (${ name })`);
+    config.addLog(`Create New Request. (${ name })`);
 
   },
 
@@ -294,6 +294,9 @@ const requestWait = {
 
     // reject un defined
     if ( !this.get(name) ) return false;
+
+    // reject un wait
+    if ( !this.get(name).is_wait ) return false;
   
     this.data = this.data.map(data => {
   
@@ -310,7 +313,7 @@ const requestWait = {
     
   },
   
-  listen(name) {
+  listen(name, add = 0) {
     
     // reject un defined
     if ( !this.get(name) ) return false;
@@ -322,8 +325,8 @@ const requestWait = {
     
       if ( data.name === name ) {
     
-        data.spam.spam += 1;
-        data.spam.num += 1;
+        data.spam.total += 1;
+        data.spam.num += 1 + add;
     
       }
     
@@ -331,6 +334,19 @@ const requestWait = {
     
     });
 
+  },
+
+  isWait(name) {
+    if ( this.get(name) ) return this.get(name).is_wait;
+  },
+  
+  isSpam(name, add = 0) {
+    if ( this.get(name) ) {
+
+      this.listen(name, add);
+
+      return this.get(name).spam.num > 1;
+    }
   }
   
 };

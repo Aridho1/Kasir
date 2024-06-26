@@ -169,6 +169,18 @@ legend {
   background-color: lue;
 }
 
+input.invalid {
+  animation: input-invalid .4s linear 4;
+}
+
+@keyframes input-invalid {
+  from {
+    outline: none;
+  } to {
+    outline: 1px solid red;
+  }
+}
+
 /* Responsive Breakpoint */
 
 /* Dekstop */
