@@ -39,3 +39,11 @@ body {
 .pop-up.show {
   transform: translate( -50%, -200% ) scale(1);
 }
+
+.d-none {
+  display: none!important;
+}
+
+.no-transition {
+  transition: 0s!important;
+}

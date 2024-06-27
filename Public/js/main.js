@@ -383,7 +383,7 @@ const popUp = (type, text, time) => {
 
 };
 
-popUp("notif", "Welcome");
+popUp("notif", "Welcome To " + getUrl()[0]);
 
 
 const reCreate = {

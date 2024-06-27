@@ -6,8 +6,15 @@ const req = {
   }
 }
 
+set_pos_li_for_mobile = true;
+
 
 const toggleNav = (attr) => {
+
+  if ( set_pos_li_for_mobile ) {
+    setPosMagicLi();
+    set_pos_li_for_mobile = false;
+  }
   
   attr ||= 'toggle';
   
@@ -29,10 +36,18 @@ const start_top_magic_li =
 
 const setPosMagicLi = () => {
   
+  if ( !getEl("nav li.active") ) return false;
+
   getEl("nav li.magic-li").style.marginTop =
     getEl("nav ul li.active").offsetTop -
     start_top_magic_li + "px"
   ;
+  
+  // console.log(
+  //   getEl("nav ul li.magic-li").offsetTop,
+  //   getEl("nav ul li.active").offsetTop,
+  //   start_top_magic_li
+  // );
   
 };
 
@@ -74,11 +89,26 @@ const redirectByNavLi = (
     .getAttribute("redirect-by-li") == "true"
       ? true : false
   ;
+
+  // set_new_active = true;
   
   getEl("nav ul li", "all").forEach(li => {
     
+    if ( li.innerText == getUrl()[0] ) {
+      li.classList.add("active");
+      // setTimeout(() => {
+        setPosMagicLi();
+        // getEl("nav li.magic-li").classList.remove("no-transition");
+      // }, 1000);
+    }
+
     li.addEventListener("click", e => {
       
+      // add transition
+      if ( getEl("nav li.magic-li").classList.contains("no-transition") ) {
+        getEl("nav li.magic-li").classList.remove("no-transition");
+      }
+
       let is_reject = reject_by_class.find(reject => 
         li.classList.value.includes(reject));
       
@@ -116,8 +146,8 @@ const redirectByNavLi = (
         setTimeout(() => {
           req.wait.nav.header = false;
           if ( redir_by_li ) {
-            //window.location.href = redirect;
-            console.log(redirect);
+            window.location.href = redirect;
+            // console.log(redirect);
           }
           
         }, wait_to_magic_li);
@@ -130,7 +160,13 @@ const redirectByNavLi = (
 };
 
 
+// getEl()
 
+// setTimeout(() => setPosMagicLi(), 1000);
+
+// document.addEventListener("DOMContentLoaded", e => {
+
+  console.log("okkkkk");
   
   redirectByNavLi();
   
@@ -166,3 +202,4 @@ const redirectByNavLi = (
     
   });
   
+// });
